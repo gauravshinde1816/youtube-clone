@@ -7,7 +7,7 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const fetchVideos = async () => {
-      const apiKey = 'AIzaSyAjZN4X1rAi4Dy-FewEd_Yh3DQmxRfA4sI'; // Replace with your actual API key
+      const apiKey = ''; // Replace with your actual API key
       const response = await fetch(
      `https://www.googleapis.com/youtube/v3/search?part=snippet&q=cricket+highlights&type=video&videoCategoryId=17&maxResults=50&key=${apiKey}`
       );

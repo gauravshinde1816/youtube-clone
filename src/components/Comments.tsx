@@ -5,7 +5,7 @@ const Comments: React.FC<{ videoId: string | null }> = ({ videoId }) => {
 
   useEffect(() => {
     const fetchComments = async () => {
-      const apiKey ='AIzaSyCo3VfcjrHkVTd80rSdZMb_76Xmk5CiFyc';
+      const apiKey ='';
       const response = await fetch(
         `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=10&key=${apiKey}`
       );

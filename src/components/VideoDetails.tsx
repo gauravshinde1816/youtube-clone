@@ -7,7 +7,7 @@ const VideoDetails: React.FC<{ video: Video | undefined}> = ({ video}) => {
 
   useEffect(() => {
     const fetchVideoDetails = async () => {
-      const apiKey = 'AIzaSyCo3VfcjrHkVTd80rSdZMb_76Xmk5CiFyc';
+      const apiKey = '';
       const response = await fetch(
         `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${apiKey}`
       );

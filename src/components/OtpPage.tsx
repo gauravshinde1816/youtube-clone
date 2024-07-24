@@ -16,14 +16,12 @@ const OtpPage: React.FC = () => {
     if (value !== '' && index < otp.length - 1) {
       inputRefs.current[index + 1]?.focus();
     }
-
     setOtp(newOtp);
   };
 
   const handleSubmit = async () => {
     const otpValue = otp.join('');
     try {
-      console.log("data :: " , data , otpValue)
       const res = await SignUp(data , otpValue)
       if(res?.status == 200) {
         navigate("/login")
@@ -39,7 +37,6 @@ const OtpPage: React.FC = () => {
         <h2 className="text-2xl font-semibold mb-4">Enter Verification Code</h2>
         <p className="text-gray-600 mb-4">We sent a verification code to your email.</p>
 
-        {/* OTP Input Fields */}
         <div className="flex space-x-4 mb-6">
           {otp.map((digit, index) => (
             <input

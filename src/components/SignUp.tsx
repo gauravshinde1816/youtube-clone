@@ -1,35 +1,50 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {useAppContext} from './context/AppContext'
-import {GenerateOtp} from "../api/auth"
+import { useAppContext } from "./context/AppContext";
+import { GenerateOtp } from "../api/auth";
+import { Toaster, toast } from "react-hot-toast";
+import Loader from "./Loader";
+
+const notifySuccess = () => toast.success("Email Sent Successfully.");
+const notifyError = () => toast.error("User already exists!!");
 
 const SignUp: React.FC = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const { setData} = useAppContext()
+  const { setData } = useAppContext();
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
-        event.preventDefault();
-        const res = await GenerateOtp({email : email})
-        console.log(firstName , lastName , email , password , res)
-        setData({name : firstName + " " + lastName , email , password})
-        navigate("/otp")
+      event.preventDefault();
+      setLoading(true);
+      const res = await GenerateOtp({ email: email });
+      if (res?.status == 200) {
+        setData({ name: firstName + " " + lastName, email, password });
+        navigate("/otp");
+        setLoading(false);
+        notifySuccess();
+      } else {
+        setLoading(false);
+        notifyError();
+      }
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
   };
 
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      {!loading && <Toaster position="top-center" />}
       <div className="bg-white p-8 rounded shadow-md w-96">
-        <h2 className="text-2xl font-semibold mb-4">
-          Create your Account
-        </h2>
+        <h2 className="text-2xl font-semibold mb-4">Create your Account</h2>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>

@@ -1,13 +1,24 @@
 import React, { useState } from "react";
-import axios from "axios";
+import {useNavigate} from "react-router-dom"
+import {Toaster , toast} from "react-hot-toast"
+import {createVideo} from "../api/video"
+import {useAppContext} from "./context/AppContext"
+import Loader from "./Loader";
+// TODO: 
+// const notifySuccess = () => toast.success("Email Sent Successfully.");
+// const notifyError = () => toast.error("User already exists!!");
+
 
 const VideoUploadPage: React.FC = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [loading  , setLoading] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+  const {data , setData} = useAppContext()
 
   const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVideoFile(event.target.files?.[0] || null);
@@ -37,21 +48,21 @@ const VideoUploadPage: React.FC = () => {
     }
 
     try {
-      const response = await axios.post(`http://localhost:8080/api/create-video`, formData, {
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total!
-          );
-          setUploadProgress(percentCompleted);
-        },
-      });
-
-      console.log(response.data);
+      setLoading(true)
+      const response = await createVideo(formData)
+      if(response?.status == 200){
+          setData({...data ,  videos: response.data})
+          setLoading(false)
+          navigate("/")
+      }
     } catch (error) {
       console.error("Upload failed:", error);
     }
   };
 
+  if(loading) {
+   return <Loader/>
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-6 rounded-md shadow-md">
@@ -122,13 +133,6 @@ const VideoUploadPage: React.FC = () => {
           >
             Upload
           </button>
-
-          {/* Upload Progress */}
-          {uploadProgress > 0 && (
-            <div className="mt-4">
-              <progress value={uploadProgress} max="100" />
-            </div>
-          )}
         </form>
       </div>
     </div>

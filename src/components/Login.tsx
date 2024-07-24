@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {useNavigate} from "react-router-dom"
+import {login} from "../api/auth"
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -7,9 +8,13 @@ const Login: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Handle form submission logic here (e.g., send credentials to backend)
+    const res = await login({email , password})
+    if(res?.status === 200){
+      localStorage.setItem("authToken" , res.data.jwtToken)
+      navigate("/")
+    }
   };
 
   return (
@@ -50,7 +55,7 @@ const Login: React.FC = () => {
             >
               Sign In
             </button>
-            <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
+            <a  onClick={()=>navigate("/reset-password-email")} className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
               Forgot password?
             </a>
           </div>
@@ -58,13 +63,7 @@ const Login: React.FC = () => {
           <a  onClick={()=>navigate("/signup")} className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
              Don't have an account, Sign Up here
             </a>
-          {/* <button
-            type="button"
-            onClick={()=>navigate("/signup")}
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-          >
-            Create account
-          </button> */}
+           
         </form>
       </div>
     </div>
